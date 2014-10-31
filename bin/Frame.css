@@ -1,0 +1,162 @@
+@CHARSET "UTF-8";
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.ytp {
+    float: left;
+    height: 100%;
+    width : 100%;
+}
+
+.ytp-player-container {
+    clear: both;
+    float: left;
+    width: 100%;
+}
+
+.ytp-player-list-error {
+    background: #0a5885 url('youtube-error.jpeg') center center;
+    height: 100%;
+    width: 100%;
+}
+
+/** channel list menu
+ * ====================================================== */
+
+.ytp-player-title {
+    background: #000000;
+    color: #FFFFFF;
+    float: left;
+    left: 0;
+    padding: 5px;
+    position: absolute;
+    top: -100px;
+}
+
+/** channel list menu
+ * ====================================================== */
+
+.ytp-player-list {
+    background: #fff;
+    float: left;
+    height: 100%;
+    left: -110%;
+    max-width: 460px;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 10;
+}
+
+.ytp-player-list-title {
+    border-bottom: 1px solid #1183b7;
+    clear: both;
+    color: #1183b7;
+    float: left;
+    font-size: 18px;
+    height: 50px;
+    line-height: 50px;
+    padding: 0 20px;
+    width: 100%;
+}
+
+.ytp-player-list-title h1 {
+    font-size: 18px;
+    font-weight: normal;
+    line-height: 50px;
+    margin: 0;
+    padding: 0;
+}
+
+.ytp-player-list-title h1 .fa {
+    margin-right: 10px;
+}
+
+.ytp-player-list-title .close {
+    cursor: pointer;
+    float: left;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    top: 0;
+    width: 40px;
+}
+
+
+.ytp-player-list-videos {
+    overflow: auto;
+    width: 100%;
+}
+
+.ytp-player-list-entry {
+    border-bottom: 1px solid #D0D3D3;
+    clear: both;
+    cursor: pointer;
+    float: left;
+    height: 90px;
+    margin-bottom: 1px;
+    width: 100%;
+}
+
+.ytp-player-list-entry:hover {
+    opacity: 0.7;
+}
+
+.ytp-player-list-entry-image {
+    background-color: #000;
+    background-position: center center;
+    background-repeat: no-repeat;
+    float: left;
+    height: 90px;
+    width: 30%;
+}
+
+.ytp-player-list-entry-text {
+    color: #444444;
+    float: left;
+    padding: 10px;
+    width: 70%;
+}
+
+/** player controls
+ * ====================================================== */
+
+.ytp-player-controls {
+    background: #000;
+    border-top: 1px solid #fff;
+    color: #EEEEEE;
+    float: left;
+    height: 50px;
+    line-height: 50px;
+    width: 100%;
+}
+
+.ytp-player-controls-list,
+.ytp-player-controls-next,
+.ytp-player-controls-prev {
+    cursor: pointer;
+    float: left;
+    text-align: center;
+    width: 20%;
+}
+
+
+.ytp-player-controls-play {
+    cursor: pointer;
+    float: left;
+    text-align: center;
+    width: 40%;
+}
+
+.ytp-player-controls-list:hover,
+.ytp-player-controls-next:hover,
+.ytp-player-controls-prev:hover,
+.ytp-player-controls-play:hover {
+    background: rgba( 255, 255, 255, 0.3 );
+}
