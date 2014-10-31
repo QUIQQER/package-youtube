@@ -1,0 +1,28 @@
+{
+    "name" : "quiqqer/youtube",
+    "type" : "quiqqer-library",
+    "description" : "YouTube for QUIQQER.",
+    "version" : "dev-master",
+    "license" : "GPL-3.0+",
+
+    "authors" : [{
+        "name": "Henning Leutz",
+        "email": "leutz@pcsg.de",
+        "homepage": "http://www.pcsg.de",
+        "role": "Developer"
+    }],
+
+    "support" : {
+        "email" : "support@pcsg.de"
+    },
+
+    "require": {
+        "quiqqer/qui" : "*@dev"
+    },
+
+    "autoload": {
+        "psr-0" : {
+            "QUI" : "lib/"
+        }
+    }
+}
