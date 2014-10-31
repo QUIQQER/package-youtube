@@ -21,7 +21,8 @@ define([
         Type    : 'package/quiqqer/youtube/bin/Player',
 
         Binds : [
-            '$onInject'
+            '$onInject',
+            '$onImport'
         ],
 
         options : {
@@ -37,7 +38,8 @@ define([
             this.$Elm = null;
 
             this.addEvents({
-                onInject : this.$onInject
+                onInject : this.$onInject,
+                onImport : this.$onImport
             });
         },
 
@@ -91,6 +93,50 @@ define([
         },
 
         /**
+         * event : on import
+         */
+        $onImport : function()
+        {
+            var Options = this.$Elm.getElement( 'div' );
+
+            this.setAttributes({
+                videos  : Options.get( 'data-videos' ).split(','),
+                channel : Options.get( 'data-channel' )
+            });
+
+            var i, len, parts, entries;
+            var style  = Options.get( 'data-style' ),
+                styles = {};
+
+            if ( style !== '' )
+            {
+                entries = style.split(';');
+
+                for ( i = 0, len = entries.length; i < len; i++ )
+                {
+                    parts = entries[ i ].trim().split(':');
+
+                    if ( typeof parts[ 0 ] !== 'undefined' &&
+                         typeof parts[ 1 ] !== 'undefined' )
+                    {
+                        styles[ parts[ 0 ].trim() ] = parts[ 1 ].trim();
+                    }
+                }
+            }
+
+            this.setAttribute( 'styles', styles );
+
+            Options.destroy();
+
+            var Elm = this.$Elm;
+
+            this.$Elm = null;
+            this.replaces( Elm );
+            this.$Elm.setSt
+            this.$onInject();
+        },
+
+        /**
          * Set videos to the player
          *
          * @param {Array} videos - list of YouTube-ID's
@@ -106,14 +152,14 @@ define([
         },
 
         /**
+         * Set channel to the player
          *
+         * @param {String} channel - YouTube Channel Name / ID
          */
-        setChannel : function(videos)
+        setChannel : function(channel)
         {
-//          + index.php?channel=CHANNEL
-
-
+            this.setAttribute( 'videos', videos );
+            this.$Elm.set('src', URL_OPT_DIR +'quiqqer/youtube/bin/frame.php?channel='+ channel);
         }
-
     });
 });

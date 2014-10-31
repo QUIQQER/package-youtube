@@ -47,7 +47,29 @@ Entwickler
 
 Das quiqqer/youtube Paket bringt ein YouTube Smarty Control und ein YouTube JavaScript Control mit.
 
-    {control control="\QUI\YouTube\"}
+Smarty PHP Control
+
+```html
+{control control="\QUI\YouTube\Controls\Player" videos="ID,ID,ID"}
+{control control="\QUI\YouTube\Controls\Player" videos="ID"}
+{control control="\QUI\YouTube\Controls\Player" channel="channel-ID"}
+```
 
 
 *Attribute*
+
+- videos : YouTube Video ID oder mehrere VideoIds
+- channel : YouTube Channel ID
+
+
+JavaScript Control
+
+```javascript
+require(['package/quiqqer/youtube/bin/Player'], function(QUIYouTube)
+{
+    new QUIYouTube({
+        videos : ['TY6CbRJlfho']
+    }).inject( ParentNode );
+});
+
+```
