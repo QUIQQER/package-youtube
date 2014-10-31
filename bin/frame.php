@@ -31,17 +31,17 @@
     ?>
 
     <!-- [begin] CSS -->
-        <link href="<?php echo $path; ?>css/grid.css" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $path; ?>bin/css/grid.css" rel="stylesheet" type="text/css" />
 
         <!--[if (lt IE 9) & (!IEMobile)]>
-        <link href="<?php echo $path; ?>css/grid-ie.css" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $path; ?>bin/css/grid-ie.css" rel="stylesheet" type="text/css" />
         <![endif]-->
 
         <link href="<?php echo $qui_path; ?>extend/classes.css" rel="stylesheet" type="text/css" />
         <link href="<?php echo $qui_path; ?>extend/elements.css" rel="stylesheet" type="text/css" />
         <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" />
 
-        <link href="<?php echo $path; ?>css/style.css" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $path; ?>bin/css/style.css" rel="stylesheet" type="text/css" />
     <!-- [end] CSS -->
 
 
