@@ -2,7 +2,7 @@
     "name" : "quiqqer/youtube",
     "type" : "quiqqer-library",
     "description" : "YouTube for QUIQQER.",
-    "version" : "dev-master",
+    "version" : "dev-dev",
     "license" : "GPL-3.0+",
 
     "authors" : [{
