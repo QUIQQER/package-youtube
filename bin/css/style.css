@@ -1,0 +1,16 @@
+@CHARSET "UTF-8";
+
+* {
+ -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+         box-sizing: border-box;
+}
+
+body, html {
+    font: normal 14px verdana,arial,tahoma,helvetica;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    width: 100%;
+}
