@@ -4,9 +4,12 @@
  *
  * @module package/quiqqer/youtube/bin/Player
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/QUI
+ * @require qui/controls/Control
  */
 
-define([
+define('package/quiqqer/youtube/bin/Player', [
 
     'qui/QUI',
     'qui/controls/Control'
@@ -46,7 +49,7 @@ define([
         /**
          * Creates the DOMNode Element
          *
-         * @return {DOMNode}
+         * @return {HTMLElement}
          */
         create : function()
         {
@@ -132,7 +135,6 @@ define([
 
             this.$Elm = null;
             this.replaces( Elm );
-            this.$Elm.setSt
             this.$onInject();
         },
 
@@ -158,7 +160,7 @@ define([
          */
         setChannel : function(channel)
         {
-            this.setAttribute( 'videos', videos );
+            this.setAttribute( 'channel', channel );
             this.$Elm.set('src', URL_OPT_DIR +'quiqqer/youtube/bin/frame.php?channel='+ channel);
         }
     });

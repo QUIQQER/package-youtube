@@ -6,9 +6,32 @@
  * @author www.pcsg.de (Henning Leutz)
  *
  * https://developers.google.com/youtube/js_api_reference
+ *
+ * @require qui/QUI
+ * @require qui/controls/Control
+ * @require qui/controls/loader/Loader
+ * @require qui/controls/utils/Background
+ * @require package/quiqqer/youtube/bin/libs/Request.JSONP
+ * @require css!package/quiqqer/youtube/bin/Frame.css
+ *
+ * @namespace YT.Player
+ * @namespace YT.Player.loadVideoById
+ * @namespace YT.Player.getPlayerState
+ * @namespace YT.Player.playVideo
+ * @namespace YT.Player.pauseVideo
+ * @namespace YT.Player.nextVideo
+ * @namespace YT.Player.previousVideo
+ * @namespace YT.Player.cuePlaylist
+ *
+ * @namespace YT.PlayerState.PLAYING
+ * @namespace YT.PlayerState.PAUSED
+ * @namespace YT.PlayerState.ENDED
+ * @namespace YT.PlayerState.CUED
  */
 
-define([
+/* global YT */
+
+define('package/quiqqer/youtube/bin/Frame', [
 
     'qui/QUI',
     'qui/controls/Control',
@@ -21,6 +44,7 @@ define([
 ], function(QUI, QUIControl, QUILoader, QUIBackground, RequestJSONP)
 {
     "use strict";
+
 
     var ytReady = false;
 
@@ -36,11 +60,11 @@ define([
         }
     };
 
-    window.onPlayerReady = function(event) {
+    window.onPlayerReady = function() {
         // event.target.playVideo();
     };
 
-    window.onPlayerStateChange = function(event) {
+    window.onPlayerStateChange = function() {
 
     };
 
@@ -100,7 +124,7 @@ define([
         /**
          * Return the DOMNode
          *
-         * @return {DOMNode}
+         * @return {HTMLElement}
          */
         create : function()
         {
@@ -147,19 +171,19 @@ define([
 
             this.$BunttonPlay.addEvents({
                 click : function() {
-                    self.toggle()
+                    self.toggle();
                 }
             });
 
             this.$BunttonPrev.addEvents({
                 click : function() {
-                    self.prev()
+                    self.prev();
                 }
             });
 
             this.$BunttonNext.addEvents({
                 click : function() {
-                    self.next()
+                    self.next();
                 }
             });
 
@@ -307,7 +331,7 @@ define([
         /**
          * play the player at the moment a video?
          *
-         * @return {Bool}
+         * @return {Boolean}
          */
         isRunning : function()
         {
@@ -315,11 +339,7 @@ define([
                 return false;
             }
 
-            if ( YT.PlayerState.PLAYING == this.$Player.getPlayerState() ) {
-                return true;
-            }
-
-            return false;
+            return ( YT.PlayerState.PLAYING == this.$Player.getPlayerState() );
         },
 
         /**
@@ -414,8 +434,6 @@ define([
             }
 
 
-            var self = this;
-
             this.$Title.set( 'html', this.$videoData[ this.$videoId ].title  );
 
             moofx( this.$Title ).animate({
@@ -455,8 +473,7 @@ define([
          */
         loadVideoData : function(videoId, callback)
         {
-            var self = this,
-                url  = 'https://gdata.youtube.com/feeds/api/videos/'+ videoId +'?v=2&alt=jsonc';
+            var url = 'https://gdata.youtube.com/feeds/api/videos/'+ videoId +'?v=2&alt=jsonc';
 
             new RequestJSONP({
                 url        : url,
@@ -475,7 +492,7 @@ define([
 
             new Element('div', {
                 'class' : 'ytp-player-list-error'
-            }).inject( self.$Elm );
+            }).inject( this.$Elm );
         },
 
     /**
@@ -521,6 +538,11 @@ define([
                     for ( i = 0, len = items.length; i < len; i++ )
                     {
                         video = items[ i ];
+
+                        // https://youtube.com/devicesupport -> -.-" ignore it
+                        if ( video.id == 'UKY3scPIMd8' ) {
+                            continue;
+                        }
 
                         videos.push( video.id );
 
