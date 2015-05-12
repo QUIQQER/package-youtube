@@ -91,7 +91,6 @@ define('package/quiqqer/youtube/bin/Frame', [
 
             channel           : false,
             channelVideoLimit : 10
-
         },
 
         initialize : function(options)

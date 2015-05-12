@@ -53,6 +53,12 @@ Smarty PHP Control
 {control control="\QUI\YouTube\Controls\Player" videos="ID,ID,ID"}
 {control control="\QUI\YouTube\Controls\Player" videos="ID"}
 {control control="\QUI\YouTube\Controls\Player" channel="channel-ID"}
+
+{control control="\QUI\YouTube\Controls\Player"
+         channel="Channel-ID"
+         key="BROWSER_KEY"
+         style="height: 500px"
+}
 ```
 
 
@@ -60,7 +66,7 @@ Smarty PHP Control
 
 - videos : YouTube Video ID oder mehrere VideoIds
 - channel : YouTube Channel ID
-
+- key : Browser Key für die Abfragen
 
 JavaScript Control
 
