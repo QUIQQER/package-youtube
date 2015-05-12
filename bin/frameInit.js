@@ -33,8 +33,10 @@ require([
     });
 
     // params
-    var videos  = [],
-        channel = '',
+    var videos   = [],
+        channel  = '',
+        clientid = '',
+        key      = '',
 
         search    = window.location.search.toString(),
         UrlParams = {};
@@ -51,10 +53,20 @@ require([
         channel = UrlParams.channel;
     }
 
+    if ( UrlParams.clientid ) {
+        clientid = UrlParams.clientid;
+    }
+
+    if ( UrlParams.key ) {
+        key = UrlParams.key;
+    }
+
     // player
     var YouTubePlayer = new Player({
-        videos  : videos,
-        channel : channel
+        videos   : videos,
+        channel  : channel,
+        clientId : clientid,
+        key      : key
     }).inject( document.body );
 
     window.addEvent('resize', function() {

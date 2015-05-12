@@ -6,13 +6,15 @@
 
 namespace QUI\YouTube\Controls;
 
+use QUI;
+
 /**
  * YouTube Player Control
  *
  * @author www.pcsg.de (Henning Leutz)
  */
 
-class Player extends \QUI\Control
+class Player extends QUI\Control
 {
     /**
      * constructor
@@ -28,6 +30,8 @@ class Player extends \QUI\Control
 
         $this->setAttribute('videos', '');
         $this->setAttribute('channel', '');
+        $this->setAttribute('clientid', '');
+        $this->setAttribute('key', '');
     }
 
     /**
@@ -40,6 +44,8 @@ class Player extends \QUI\Control
         $str = '<div ';
         $str .= 'data-videos="'.$this->getAttribute('videos').'" ';
         $str .= 'data-channel="'.$this->getAttribute('channel').'" ';
+        $str .= 'data-clientid="'.$this->getAttribute('clientid').'" ';
+        $str .= 'data-key="'.$this->getAttribute('key').'" ';
         $str .= 'data-style="'.$this->getAttribute('style').'" ';
         $str .= '></div>';
 
