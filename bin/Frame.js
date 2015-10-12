@@ -6,9 +6,32 @@
  * @author www.pcsg.de (Henning Leutz)
  *
  * https://developers.google.com/youtube/js_api_reference
+ *
+ * @require qui/QUI
+ * @require qui/controls/Control
+ * @require qui/controls/loader/Loader
+ * @require qui/controls/utils/Background
+ * @require package/quiqqer/youtube/bin/libs/Request.JSONP
+ * @require css!package/quiqqer/youtube/bin/Frame.css
+ *
+ * @namespace YT.Player
+ * @namespace YT.Player.loadVideoById
+ * @namespace YT.Player.getPlayerState
+ * @namespace YT.Player.playVideo
+ * @namespace YT.Player.pauseVideo
+ * @namespace YT.Player.nextVideo
+ * @namespace YT.Player.previousVideo
+ * @namespace YT.Player.cuePlaylist
+ *
+ * @namespace YT.PlayerState.PLAYING
+ * @namespace YT.PlayerState.PAUSED
+ * @namespace YT.PlayerState.ENDED
+ * @namespace YT.PlayerState.CUED
  */
 
-define([
+/* global YT */
+
+define('package/quiqqer/youtube/bin/Frame', [
 
     'qui/QUI',
     'qui/controls/Control',
@@ -21,6 +44,7 @@ define([
 ], function(QUI, QUIControl, QUILoader, QUIBackground, RequestJSONP)
 {
     "use strict";
+
 
     var ytReady = false;
 
@@ -36,18 +60,17 @@ define([
         }
     };
 
-    window.onPlayerReady = function(event) {
+    window.onPlayerReady = function() {
         // event.target.playVideo();
     };
 
-    window.onPlayerStateChange = function(event) {
+    window.onPlayerStateChange = function() {
 
     };
 
     window.stopVideo = function() {
 
     };
-
 
     return new Class({
 
@@ -61,6 +84,8 @@ define([
         ],
 
         options : {
+            key      : '',
+            clientId : false,
             videos   : [],
             autoplay : false,
 
@@ -79,6 +104,8 @@ define([
                 }
             });
 
+            this.$PlaylistId = false;
+
             this.$Player = null;
             this.$Frame  = null;
 
@@ -90,7 +117,7 @@ define([
             this.$ListTitle     = null;
 
             this.$videoData = {};
-            this.$justRan   = false;
+            this.$justRun   = false;
 
             this.addEvents({
                 onInject : this.$onInject
@@ -100,7 +127,7 @@ define([
         /**
          * Return the DOMNode
          *
-         * @return {DOMNode}
+         * @return {HTMLElement}
          */
         create : function()
         {
@@ -147,19 +174,19 @@ define([
 
             this.$BunttonPlay.addEvents({
                 click : function() {
-                    self.toggle()
+                    self.toggle();
                 }
             });
 
             this.$BunttonPrev.addEvents({
                 click : function() {
-                    self.prev()
+                    self.prev();
                 }
             });
 
             this.$BunttonNext.addEvents({
                 click : function() {
-                    self.next()
+                    self.next();
                 }
             });
 
@@ -258,9 +285,9 @@ define([
                 }).inject( document.body );
             }
 
-            if ( ytReady ) {
-                this.load();
-            }
+//            if ( ytReady ) {
+//                this.load();
+//            }
         },
 
         /**
@@ -307,7 +334,7 @@ define([
         /**
          * play the player at the moment a video?
          *
-         * @return {Bool}
+         * @return {Boolean}
          */
         isRunning : function()
         {
@@ -315,11 +342,7 @@ define([
                 return false;
             }
 
-            if ( YT.PlayerState.PLAYING == this.$Player.getPlayerState() ) {
-                return true;
-            }
-
-            return false;
+            return ( YT.PlayerState.PLAYING == this.$Player.getPlayerState() );
         },
 
         /**
@@ -400,21 +423,28 @@ define([
                 this.loadVideoData( this.$videoId, function(result)
                 {
                     // youtube error?
-                    if ( typeof result === 'undefined' || typeof result.data === 'undefined' )
+                    if ( typeof result === 'undefined' || typeof result.items === 'undefined' )
                     {
                         self.showError();
                         return;
                     }
 
-                    self.$videoData[ self.$videoId ] = result.data;
+                    self.$videoData[ self.$videoId ] = result.items[0];
                     self.showTitle();
                 });
 
                 return;
             }
 
+            var title = '';
 
-            var self = this;
+            if ( "snippet" in this.$videoData[ this.$videoId ] ) {
+                title = this.$videoData[ this.$videoId].snippet.title;
+            }
+
+            if ( "title" in this.$videoData[ this.$videoId ] ) {
+                title = this.$videoData[ this.$videoId].title;
+            }
 
             this.$Title.set( 'html', this.$videoData[ this.$videoId ].title  );
 
@@ -455,11 +485,14 @@ define([
          */
         loadVideoData : function(videoId, callback)
         {
-            var self = this,
-                url  = 'https://gdata.youtube.com/feeds/api/videos/'+ videoId +'?v=2&alt=jsonc';
+            var params = Object.toQueryString({
+                id : videoId,
+                key : this.getAttribute('key'),
+                part : "snippet,contentDetails,status"
+            });
 
             new RequestJSONP({
-                url        : url,
+                url        : 'https://www.googleapis.com/youtube/v3/videos?'+ params,
                 onComplete : function(data) {
                     callback( data );
                 }
@@ -475,7 +508,7 @@ define([
 
             new Element('div', {
                 'class' : 'ytp-player-list-error'
-            }).inject( self.$Elm );
+            }).inject( this.$Elm );
         },
 
     /**
@@ -483,85 +516,121 @@ define([
      */
 
         /**
+         *
+         * @param callback
+         * @returns {*}
+         */
+        $getPlaylistId :function(callback)
+        {
+            if ( this.$PlaylistId ) {
+                return callback( this.$PlaylistId );
+            }
+
+            var self = this,
+                params = Object.toQueryString({
+                    part : "contentDetails",
+                    forUsername : this.getAttribute( 'channel' ),
+                    key : this.getAttribute( 'key' )
+                });
+
+            new RequestJSONP({
+                url: 'https://www.googleapis.com/youtube/v3/channels?'+ params,
+                onComplete: function (data)
+                {
+                    self.$PlaylistId = data.items[0].contentDetails.relatedPlaylists.uploads;
+
+                    callback( self.$PlaylistId );
+                }
+            }).send();
+        },
+
+        /**
          * load the channel videos and start the player
          */
         loadChannelVideos : function()
         {
-            var self    = this,
-                channel = this.getAttribute( 'channel' ),
-                max     = this.getAttribute( 'channelVideoLimit' );
+            var self = this,
+                max  = this.getAttribute( 'channelVideoLimit' );
 
-            var url = 'https://gdata.youtube.com/feeds/api/users/'+ channel +'/uploads?&max-re‌​sults='+ max +'&v=2&alt=jsonc&orderby=published';
+            this.$getPlaylistId(function(playlistId)
+            {
+                var params = Object.toQueryString({
+                    part : "snippet",
+                    maxResult : max,
+                    playlistId : playlistId,
+                    key : self.getAttribute( 'key' )
+                });
 
-            new RequestJSONP({
-                url        : url,
-                onComplete : function(data)
-                {
-                    // youtube error?
-                    if ( typeof data === 'undefined' ||
-                         typeof data.data === 'undefined' ||
-                         typeof data.data.items === 'undefined' ||
-                         !data.data.items.length )
+                new RequestJSONP({
+                    url: 'https://www.googleapis.com/youtube/v3/playlistItems?'+ params,
+                    onComplete: function (data)
                     {
-                        self.showError();
-                        return;
+                        // youtube error?
+                        if ( typeof data === 'undefined' ||
+                             typeof data.items === 'undefined' ||
+                             !data.items.length )
+                        {
+                            self.showError();
+                            return;
+                        }
+
+
+                        var i, len, video, Entry;
+
+                        var items  = data.items,
+                            videos = [];
+
+                        var itemClick = function() {
+                            self.$onEntryClick( this.get( 'data-yid' ) );
+                        };
+
+                        for ( i = 0, len = items.length; i < len; i++ )
+                        {
+                            video = items[ i ].snippet;
+
+                            var videoId = video.resourceId.videoId;
+
+                            videos.push( videoId );
+
+                            self.$videoData[ videoId ] = video;
+
+                            // video vorschau
+                            Entry = new Element('div', {
+                                'class'    : 'ytp-player-list-entry',
+                                'data-yid' : videoId,
+                                html : '<div class="ytp-player-list-entry-image"></div>'+
+                                       '<div class="ytp-player-list-entry-text">'+
+                                           video.title +
+                                       '</div>',
+                                events : {
+                                    click : itemClick
+                                }
+                            }).inject( self.$ListVideos );
+
+                            Entry.getElement( '.ytp-player-list-entry-image' ).setStyles({
+                                'background-image' : 'url("'+ video.thumbnails.default.url +'")'
+                            });
+                        }
+
+
+                        if ( !self.getAttribute( 'videos' ) ||
+                             self.getAttribute( 'videos' ).length <= 1 )
+                        {
+                            self.$ControlContainer.setStyles({
+                                display: null
+                            });
+
+                            self.$BunttonPlay.setStyles({
+                                width : '40%'
+                            });
+                        }
+
+                        self.setAttribute( 'videos', videos );
+                        self.resize();
+                        self.loadPlayer();
                     }
-
-
-
-                    var i, len, video, Entry;
-
-                    var items  = data.data.items,
-                        videos = [];
-
-                    var itemClick = function() {
-                        self.$onEntryClick( this.get( 'data-yid' ) );
-                    };
-
-                    for ( i = 0, len = items.length; i < len; i++ )
-                    {
-                        video = items[ i ];
-
-                        videos.push( video.id );
-
-                        self.$videoData[ video.id ] = video;
-
-                        // video vorschau
-                        Entry = new Element('div', {
-                            'class'    : 'ytp-player-list-entry',
-                            'data-yid' : video.id,
-                            html : '<div class="ytp-player-list-entry-image"></div>'+
-                                   '<div class="ytp-player-list-entry-text">'+
-                                       video.title +
-                                   '</div>',
-                            events : {
-                                click : itemClick
-                            }
-                        }).inject( self.$ListVideos );
-
-                        Entry.getElement( '.ytp-player-list-entry-image' ).setStyles({
-                            'background-image' : 'url("'+ video.thumbnail.sqDefault +'")'
-                        });
-                    }
-
-
-                    if ( !self.getAttribute( 'videos' ) ||
-                         self.getAttribute( 'videos' ).length <= 1 )
-                    {
-                        self.$ControlContainer.setStyles({
-                            display: null
-                        });
-
-                        self.$BunttonPlay.setStyles({
-                            width : '40%'
-                        });
-                    }
-
-                    self.setAttribute( 'videos', videos );
-                    self.resize();
-                    self.loadPlayer();
-                }
-            }).send();
+                }).send();
+            });
         },
 
         /**
@@ -573,7 +642,7 @@ define([
 
             if ( this.isRunning() )
             {
-                this.$justRan = true;
+                this.$justRun = true;
                 this.pause();
             }
 
@@ -589,11 +658,11 @@ define([
         {
             this.Background.hide();
 
-            if ( this.$justRan ) {
+            if ( this.$justRun ) {
                 this.play();
             }
 
-            this.$justRan = false;
+            this.$justRun = false;
 
             moofx( this.$ListContainer ).animate({
                 left : '-110%'

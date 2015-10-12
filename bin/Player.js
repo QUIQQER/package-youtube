@@ -4,9 +4,12 @@
  *
  * @module package/quiqqer/youtube/bin/Player
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/QUI
+ * @require qui/controls/Control
  */
 
-define([
+define('package/quiqqer/youtube/bin/Player', [
 
     'qui/QUI',
     'qui/controls/Control'
@@ -27,8 +30,10 @@ define([
 
         options : {
             styles  : false,
-            videos  : [],
-            channel : false
+            videos  : false,
+            channel : false,
+            clientid : '',
+            key : ''
         },
 
         initialize : function(options)
@@ -46,7 +51,7 @@ define([
         /**
          * Creates the DOMNode Element
          *
-         * @return {DOMNode}
+         * @return {HTMLElement}
          */
         create : function()
         {
@@ -76,8 +81,9 @@ define([
             {
                 var videos = this.getAttribute( 'videos' );
 
-                if ( typeOf( videos ) == 'array' && videos.length )
-                {
+                if ( typeOf( videos ) == 'array' && videos.length &&
+                     (videos.length == 1 && videos[0] !== '')
+                ) {
                     this.setVideos( this.getAttribute( 'videos' ) );
                     return;
                 }
@@ -100,11 +106,14 @@ define([
             var Options = this.$Elm.getElement( 'div' );
 
             this.setAttributes({
-                videos  : Options.get( 'data-videos' ).split(','),
-                channel : Options.get( 'data-channel' )
+                videos   : Options.get( 'data-videos' ).split(','),
+                channel  : Options.get( 'data-channel' ),
+                clientid : Options.get( 'data-clientid' ),
+                key      : Options.get( 'data-key' )
             });
 
             var i, len, parts, entries;
+
             var style  = Options.get( 'data-style' ),
                 styles = {};
 
@@ -132,7 +141,6 @@ define([
 
             this.$Elm = null;
             this.replaces( Elm );
-            this.$Elm.setSt
             this.$onInject();
         },
 
@@ -147,8 +155,14 @@ define([
                 return;
             }
 
+            var params = {
+                clientid : this.getAttribute('clientid'),
+                key : this.getAttribute('key'),
+                videos : videos.join(',')
+            };
+
             this.setAttribute( 'videos', videos );
-            this.$Elm.set('src', URL_OPT_DIR +'quiqqer/youtube/bin/frame.php?videos='+ videos.join(','));
+            this.$Elm.set('src', URL_OPT_DIR +'quiqqer/youtube/bin/frame.php?'+ Object.toQueryString(params));
         },
 
         /**
@@ -158,8 +172,14 @@ define([
          */
         setChannel : function(channel)
         {
-            this.setAttribute( 'videos', videos );
-            this.$Elm.set('src', URL_OPT_DIR +'quiqqer/youtube/bin/frame.php?channel='+ channel);
+            var params = {
+                clientid : this.getAttribute('clientid'),
+                key : this.getAttribute('key'),
+                channel : channel
+            };
+
+            this.setAttribute( 'channel', channel );
+            this.$Elm.set('src', URL_OPT_DIR +'quiqqer/youtube/bin/frame.php?'+ Object.toQueryString(params));
         }
     });
 });
