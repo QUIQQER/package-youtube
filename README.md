@@ -1,4 +1,4 @@
-# QUIQQER YouTube Package
+QUIQQER YouTube Package
 ========
 
 Das Paket stellt einen HTML YouTube Player zur Verfügung.
@@ -25,7 +25,7 @@ Installieren Sie das QUIQQER YouTube Paket über den Paketnamen:
 Mitwirken
 ----------
 
-- Issue Tracker:
+- Issue Tracker: https://dev.quiqqer.com/quiqqer/package-youtube/issues
 - Source Code: https://dev.quiqqer.com/quiqqer/package-youtube
 
 
