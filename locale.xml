@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <locales>
-    <groups name="quiqqer/smarty3" datatype="php,js">
+    <groups name="quiqqer/youtube" datatype="php,js">
         <locale name="package.name">
             <de><![CDATA[QUIQQER Youtube]]></de>
             <en><![CDATA[QUIQQER Youtube]]></en>
