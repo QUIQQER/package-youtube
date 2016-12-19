@@ -13,17 +13,16 @@ use QUI;
  *
  * @author www.pcsg.de (Henning Leutz)
  */
-
 class Player extends QUI\Control
 {
     /**
      * constructor
      *
-     * @param Array $attributes
+     * @param array $attributes
      */
     public function __construct($attributes = array())
     {
-        parent::setAttributes($attributes);
+        parent::__construct($attributes);
 
         $this->setAttribute('qui-class', 'package/quiqqer/youtube/bin/Player');
         $this->setAttribute('class', 'quiqqer-youtube-player');
@@ -42,11 +41,11 @@ class Player extends QUI\Control
     public function getBody()
     {
         $str = '<div ';
-        $str .= 'data-videos="'.$this->getAttribute('videos').'" ';
-        $str .= 'data-channel="'.$this->getAttribute('channel').'" ';
-        $str .= 'data-clientid="'.$this->getAttribute('clientid').'" ';
-        $str .= 'data-key="'.$this->getAttribute('key').'" ';
-        $str .= 'data-style="'.$this->getAttribute('style').'" ';
+        $str .= 'data-videos="' . $this->getAttribute('videos') . '" ';
+        $str .= 'data-channel="' . $this->getAttribute('channel') . '" ';
+        $str .= 'data-clientid="' . $this->getAttribute('clientid') . '" ';
+        $str .= 'data-key="' . $this->getAttribute('key') . '" ';
+        $str .= 'data-style="' . $this->getAttribute('style') . '" ';
         $str .= '></div>';
 
         return $str;
